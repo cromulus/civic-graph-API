@@ -15,42 +15,36 @@ You'll also need Redis (http://redis.io/download) and MySQL.
 
 ## Instructions
 
-Clone the git project:
+- Clone the git project:
 ```
-git clone https://github.com/MicrosoftTCE/civic-graph.git
+git clone https://github.com/MicrosoftTCE/civic-graph-API.git
 ```
-
-Copy contents from /sampleconfig into project root:
-```
-cp sampleconfig/* .
-```
-
-Navigate to app/static and install npm:
-```
-npm install
-```
-Build minification files:
-```
-gulp
-```
-Install virtualenv:
+- Install virtualenv:
 ```
 pip install -U virtualenv
 ```
-Create a virtual environment in the civic-graph folder:
+
+- Create a virtual environment in the civic-graph folder:
 ```
 virtualenv env
 ```
-Activate the virtual environment with:
+NOTE: if the above command didn't work, install virtualenv again this way:
+
+``
+sudo /usr/bin/easy_install virtualenv
+``
+
+- Activate the virtual environment with:
 ```
 .\env\Scripts\activate      # (Windows)
 source env/bin/activate     # (Mac/Linux)
 ```
-Then you can install the required packages with:
+
+- Then you can install the required packages with:
 ```
-pip install -r requirements.txt
+pip install -r requirements-to-freeze.txt
 ```
-Set up mySQL with a username/password (and copy those into secrets.py)
+- Set up mySQL with a username/password (and copy those into secrets.py):
 ```
 mysql -u [user] -p << EOF
 CREATE USER 'newuser'@'localhost' IDENTIFIED BY 'password';
@@ -58,30 +52,34 @@ GRANT ALL PRIVILEGES ON * . * TO 'newuser'@'localhost';
 FLUSH PRIVILEGES;
 EOF
 ```
-Import schema.sql into a database named civicgraph
+- Import schema.sql into a database named civicgraph
 ```
 mysql -u root -p civicgraph < sql/schema.sql
 ```
-Run redis-server:
+- Run redis-server:
 ```
 redis-server /PATH/TO/redis.conf
 brew services start redis		    # (Homebrew)
 ```
-Run nginx:
+- Run nginx:
 ```
 brew services start nginx
 ```
-Run uwsgi:
+- Create .env (and update vars for local mysql setup):
+```
+cp .env_EXAMPLE .env
+```
+- Source .env:
+```
+source .env
+```
+- Run uwsgi:
 ```
 uwsgi --ini uwsgi.ini
 ```
-Finally, you can run the application on `http://localhost:5000`:
-```
-python run.py
-```
 
 
-New stuff:
+If you'd like to run without uwsgi, see below:
 
 Server:
 ```source env/bin/activate && source .env && python run.py```
